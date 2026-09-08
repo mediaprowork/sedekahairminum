@@ -3,10 +3,17 @@ export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { getRekening } from '@/lib/supabase/queries/marketing';
+import { getRekening, getSettings } from '@/lib/supabase/queries/marketing';
 
 const supabase = Astro.locals.supabase;
 const rekening = await getRekening(supabase);
+let settings: any = {};
+if (supabase) {
+  settings = await getSettings(supabase);
+}
+const contact = settings.contact ?? {};
+const defaultWa = contact.whatsapp || '6285319480974';
+const defaultWaUrl = `https://wa.me/${defaultWa}?text=Assalamu%27alaikum%2C%20saya%20ingin%20bertanya%20tentang%20program%20Sedekah%20Air%20Minum.`;
 ---
 
 <Layout
@@ -40,8 +47,8 @@ const rekening = await getRekening(supabase);
               </div>
               <div>
                 <div class="contact-item__label">WhatsApp — Administrasi GWS</div>
-                <div class="contact-item__value"><a href="https://wa.me/6285319480974?text=Assalamu%27alaikum%2C%20saya%20ingin%20bertanya%20tentang%20program%20Sedekah%20Air%20Minum." target="_blank" rel="noopener noreferrer">+62 853-1948-0974</a></div>
-                <div class="contact-item__sub">Senin–Sabtu · 08:00–17:00 WIB</div>
+                <div class="contact-item__value"><a href={defaultWaUrl} target="_blank" rel="noopener noreferrer">+{defaultWa.replace(/^62/, '62 ')}</a></div>
+                <div class="contact-item__sub">{contact.hours || 'Senin–Sabtu · 08:00–17:00 WIB'}</div>
               </div>
             </div>
 
@@ -51,7 +58,7 @@ const rekening = await getRekening(supabase);
               </div>
               <div>
                 <div class="contact-item__label">Email</div>
-                <div class="contact-item__value"><a href="mailto:gerakansumur@gmail.com">gerakansumur@gmail.com</a></div>
+                <div class="contact-item__value"><a href={`mailto:${contact.email || 'gerakansumur@gmail.com'}`}>{contact.email || 'gerakansumur@gmail.com'}</a></div>
                 <div class="contact-item__sub">Untuk donasi korporat & kemitraan</div>
               </div>
             </div>
@@ -62,7 +69,7 @@ const rekening = await getRekening(supabase);
               </div>
               <div>
                 <div class="contact-item__label">Alamat Kantor</div>
-                <div class="contact-item__value">Karang Duwet II, Karangrejek</div>
+                <div class="contact-item__value">{contact.address || 'Karang Duwet II, Karangrejek'}</div>
                 <div class="contact-item__sub">Kec. Wonosari, Kab. Gunung Kidul, DI Yogyakarta</div>
               </div>
             </div>
@@ -73,7 +80,7 @@ const rekening = await getRekening(supabase);
               </div>
               <div>
                 <div class="contact-item__label">Jam Operasional</div>
-                <div class="contact-item__value">Senin – Sabtu · 08:00 – 17:00 WIB</div>
+                <div class="contact-item__value">{contact.hours || 'Senin – Sabtu · 08:00 – 17:00 WIB'}</div>
                 <div class="contact-item__sub">Tutup pada hari Minggu & libur nasional</div>
               </div>
             </div>
@@ -279,8 +286,8 @@ const rekening = await getRekening(supabase);
   });
 </script>
 
-<script is:inline>
-  var WA_NUMBER = '6285319480974';
+<script is:inline define:vars={{ defaultWa }}>
+  var WA_NUMBER = defaultWa;
   var form = document.getElementById('contact-form');
   var btn = document.getElementById('submit-btn');
   var btnDefault = 'Kirim Pesan <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
