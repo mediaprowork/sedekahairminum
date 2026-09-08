@@ -41,10 +41,10 @@ export default function IndonesiaMapComponent({ points }: Props) {
                 width: Math.max(12, p.galon * 1.2),
                 height: Math.max(12, p.galon * 1.2),
                 borderRadius: "50%",
-                background: "#5ee4f0",
+                background: done ? "#84cc88" : "#5ee4f0",
                 border: "2px solid rgba(255,255,255,0.85)",
-                boxShadow: done ? "0 0 6px rgba(94, 228, 240, 0.2)" : "0 0 10px rgba(94, 228, 240, 0.5)",
-                opacity: done ? 0.4 : 1,
+                boxShadow: done ? "0 0 6px rgba(132, 204, 136, 0.35)" : "0 0 10px rgba(94, 228, 240, 0.5)",
+                opacity: done ? 0.45 : 1,
                 cursor: "pointer",
               }} />
             </MarkerContent>
